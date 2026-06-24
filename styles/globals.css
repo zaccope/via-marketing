@@ -175,6 +175,30 @@
   }
 }
 
+/* Zero-JS scroll reveal via CSS scroll-driven animations. Content is visible
+   by default; it only animates where the browser supports view timelines and
+   the user has not requested reduced motion. */
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      opacity: 0;
+      animation: reveal-rise both linear;
+      animation-timeline: view();
+      animation-range: entry 4% cover 20%;
+    }
+  }
+}
+
 /* Respect reduced-motion: kill non-essential motion. */
 @media (prefers-reduced-motion: reduce) {
   html {

@@ -1,84 +1,49 @@
-"use client";
-
-import { motion, useReducedMotion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
 /**
  * Reveal: a scroll-into-view entrance used consistently across sections.
- * Motivation: storytelling. Content enters in reading order as it arrives.
- * Collapses to static instantly under prefers-reduced-motion.
+ *
+ * Implemented with zero JavaScript via CSS scroll-driven animations
+ * (animation-timeline: view()) defined in globals.css under `.reveal`.
+ * Content is visible by default; the animation only enhances where the
+ * browser supports it and the user has not requested reduced motion.
+ *
+ * The `delay` prop is accepted for call-site compatibility but is no longer
+ * needed: each element animates as it enters the viewport on its own.
  */
 export function Reveal({
   children,
-  className,
-  delay = 0,
-  as = "div",
+  className = "",
+  delay,
+  as: Tag = "div",
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
   as?: "div" | "li" | "section";
 }) {
-  const reduce = useReducedMotion();
-  const MotionTag = motion[as];
-  return (
-    <MotionTag
-      className={className}
-      initial={reduce ? false : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </MotionTag>
-  );
+  void delay;
+  return <Tag className={`reveal ${className}`}>{children}</Tag>;
 }
 
-/**
- * RevealGroup + RevealItem: staggered reveals for grids and lists where the
- * sequence communicates grouping.
- */
-const groupVariants: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
-};
-
+/** Wrapper for a group of revealing items (kept for call-site compatibility). */
 export function RevealGroup({
   children,
-  className,
+  className = "",
 }: {
   children: ReactNode;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      variants={groupVariants}
-      initial={reduce ? false : "hidden"}
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
 
+/** A single revealing item within a group. */
 export function RevealItem({
   children,
-  className,
+  className = "",
 }: {
   children: ReactNode;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
-  return (
-    <motion.div className={className} variants={reduce ? undefined : itemVariants}>
-      {children}
-    </motion.div>
-  );
+  return <div className={`reveal ${className}`}>{children}</div>;
 }

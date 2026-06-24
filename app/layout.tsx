@@ -7,7 +7,7 @@ const sora = Sora({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-sora",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["600", "700", "800"], // only the display weights the UI uses
 });
 
 const inter = Inter({
