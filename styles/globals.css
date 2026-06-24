@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────
+   VIA brand tokens — single source of truth for color.
+   Canvas matches the VIA strategy site: a deep-green sunrise
+   canvas. Purple is the primary action color; the warm sunrise
+   family (lavender, glow) and bright aqua carry accents, because
+   mid-tone mint blends into the green and is reserved for fills.
+   The page is one theme (deep green), locked.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Canvas (deep green, from the strategy site) */
+  --canvas: #0b3326;
+  --canvas-2: #07251b;
+
+  /* Elevated surfaces (lighter greens that read as cards on the canvas) */
+  --ink: #0b3326; /* base, same as canvas */
+  --ink-2: #103e2e; /* raised: cards, feature band */
+  --ink-3: #164a35; /* highest surface */
+
+  /* Hairlines / borders */
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.2);
+
+  /* Text (both pass WCAG AA on the green canvas) */
+  --text: #f1f7f3;
+  --text-muted: #c2dccf;
+
+  /* Brand accents (from the brand guide palette) */
+  --purple: #7b3ff2; /* VIA Purple, primary action */
+  --purple-deep: #5b21b6; /* depth, button gradient end */
+  --purple-light: #9d6bff;
+  --lavender: #b794ff; /* Lavender Glow */
+  --glow: #e2a6f2; /* sunrise magenta glow, warm accent */
+  --mint: #2fbf8f; /* Growth Mint, used in fills only */
+  --aqua: #33e6d1; /* Aqua, bright accent that pops on green */
+  --sky: #8dd7ff; /* Sky Mist */
+  --peach: #ffd6b3; /* Soft Peach */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem; /* clear the sticky nav on anchor jumps */
+    overflow-x: clip;
+  }
+
+  body {
+    overflow-x: clip;
+    background-color: var(--canvas);
+    /* sunrise canvas: lighter green up top, deeper toward the edges */
+    background-image: radial-gradient(
+      120% 90% at 50% -10%,
+      var(--canvas) 0%,
+      var(--canvas-2) 70%
+    );
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-sora), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+    color: var(--text);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--glow) 50%, transparent);
+    color: #fff;
+  }
+
+  /* Visible keyboard focus everywhere (quality floor) */
+  :focus-visible {
+    outline: 2px solid var(--aqua);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Page width container, consistent across every section. */
+  .container-via {
+    width: 100%;
+    max-width: 75rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-via {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Brand gradient text (sunrise: lavender to glow), used sparingly. */
+  .text-gradient {
+    background-image: linear-gradient(110deg, var(--lavender) 0%, var(--glow) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Glass panel surface used for product cards / chips. */
+  .panel {
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+  }
+
+  /* Primary CTA: VIA purple gradient, white text (the brand button). */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.8rem 1.4rem;
+    font-weight: 600;
+    color: #fff;
+    background-image: linear-gradient(110deg, var(--purple) 0%, var(--purple-deep) 100%);
+    box-shadow: 0 8px 30px -10px color-mix(in srgb, var(--purple) 80%, transparent);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  }
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 12px 40px -10px color-mix(in srgb, var(--purple) 95%, transparent);
+  }
+  .btn-primary:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  /* Secondary CTA: outline that reads on the green canvas. */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.8rem 1.4rem;
+    font-weight: 600;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line-strong);
+    transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: color-mix(in srgb, var(--aqua) 50%, transparent);
+  }
+  .btn-secondary:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  /* Shared card hover used consistently across the page. */
+  .card-hover {
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--aqua) 40%, transparent);
+    background: var(--ink-3);
+  }
+}
+
+/* Respect reduced-motion: kill non-essential motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
